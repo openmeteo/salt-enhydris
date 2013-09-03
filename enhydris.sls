@@ -53,8 +53,8 @@ dickinson:
 enhydris.tar.gz:
   file.managed:
     - name: /usr/local/enhydris.tar.gz
-    - source: https://github.com/openmeteo/enhydris/archive/cee19e4212.tar.gz
-    - source_hash: md5=52039003c137c471106f46df6ddad975
+    - source: https://github.com/openmeteo/enhydris/archive/afc5224c91.tar.gz
+    - source_hash: md5=0a9fc7d77839c04db18325eea184a1b7
 
 # Unpack enhydris
 enhydris:
@@ -62,9 +62,9 @@ enhydris:
     - cwd: /usr/local
     - name: >
         tar xzf enhydris.tar.gz &&
-        ln -s enhydris-cee19e42122f0fa7cba4567e6b8483e93401fd87 enhydris
+        ln -s enhydris-afc5224c9188ed3039971acde8391b5c2aaac16b enhydris
     - unless:
-        test -e /usr/local/enhydris-cee19e42122f0fa7cba4567e6b8483e93401fd87
+        test -e /usr/local/enhydris-afc5224c9188ed3039971acde8391b5c2aaac16b
     - require:
         - file.managed: enhydris.tar.gz
 
