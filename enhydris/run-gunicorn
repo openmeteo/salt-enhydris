@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+LOGFILE=/var/log/gunicorn/enhydris-{{ instance.name }}.log
+LOGDIR=$(dirname $LOGFILE)
+NUM_WORKERS={{ grains['num_cpus'] * 2 + 1 }}
+USER=enhydris
+GROUP=enhydris
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PYTHONPATH=$SCRIPT_DIR:/usr/local/enhydris
+DJANGO_SETTINGS_MODULE=settings
+source /usr/local/enhydris.virtualenv/bin/activate
+cd /usr/local/enhydris
+exec gunicorn enhydris.wsgi:application --workers=$NUM_WORKERS --user=$USER \
+    --group=$GROUP --log-level=warning --log-file=$LOGFILE  2>>$LOGFILE

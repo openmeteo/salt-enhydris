@@ -1,0 +1,17 @@
+enhydris_instances:
+  - name: openmeteo
+    admins:
+      - email: anthony@itia.ntua.gr
+        name: Antonis Christofides
+      - email: soulman@itia.ntua.gr
+        name: Stefanos Kozanis
+    database:
+      host: localhost
+      name: openmeteo
+      user: openmeteo
+      password: secret
+      port: 5432
+    time_zone: Europe/Athens
+    site_id: 1
+    site_url: openmeteo.org
+    secret_key: 3urG6J^*@csMZSOTwUg.OLfU6MgQo$LK6Ey+-P^H+&rBOYhWMM
