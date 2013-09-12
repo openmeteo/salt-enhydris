@@ -17,3 +17,4 @@ enhydris_instances:
     default_from_email: noreply@openmeteo.org
     email_host_user: openmeteo
     email_host_password: mypassword
+    gunicorn_port: 8001

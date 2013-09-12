@@ -11,4 +11,5 @@ DJANGO_SETTINGS_MODULE=settings
 source /usr/local/enhydris.virtualenv/bin/activate
 cd /usr/local/enhydris
 exec gunicorn enhydris.wsgi:application --workers=$NUM_WORKERS --user=$USER \
-    --group=$GROUP --log-level=warning --log-file=$LOGFILE  2>>$LOGFILE
+    --group=$GROUP --log-level=warning --log-file=$LOGFILE  \
+    --bind 127.0.0.1:{{ instance.gunicorn_port }} 2>>$LOGFILE

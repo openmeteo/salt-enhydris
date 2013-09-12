@@ -169,7 +169,11 @@ template_postgis1:
         psql template_postgis -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql;
         psql -c
         "UPDATE pg_database SET datistemplate='true'
-        WHERE datname='template_postgis'" template_postgis
+        WHERE datname='template_postgis'" template_postgis;
+        psql -c
+        "GRANT SELECT ON spatial_ref_sys TO PUBLIC;" template_postgis;
+        psql -c
+        "GRANT ALL ON geometry_columns TO PUBLIC;" template_postgis;
     - unless: psql -c "SELECT * FROM spatial_ref_sys LIMIT 1" template_postgis
     - require:
         - postgres_database.present: template_postgis
@@ -177,10 +181,13 @@ template_postgis1:
 
 # PostgreSQL users
 {% for instance in pillar.get('enhydris_instances', {}) %}
-{{ instance.name }}:
+{{ instance.name }}-postgresql-user:
   postgres_user.present:
+    - name: {{ instance.name }}
     - password: {{ instance.secret_key }}
     - encrypted: True
+    - require:
+        - pkg: postgresql
 {% endfor %}
 
 
@@ -189,7 +196,6 @@ template_postgis1:
 nginx:
   pkg:
     - installed
-nginx:
   service:
     - running
     - watch:
@@ -208,9 +214,15 @@ nginx:
         instance: {{ instance }}
     - require:
         - pkg: nginx
+/etc/nginx/sites-enabled/{{ instance.site_url }}:
+  file.symlink:
+    - target: /etc/nginx/sites-available/{{ instance.site_url }}
+    - require:
+        - file.managed: /etc/nginx/sites-available/{{ instance.site_url }}
 extend:
   nginx:
     service:
       - watch:
-          - file.managed: /etc/nginx/sites_available/{{ instance.site_url }}
-{% endfor %
+          - file.managed: /etc/nginx/sites-enabled/{{ instance.site_url }}
+          - file.managed: /etc/nginx/sites-available/{{ instance.site_url }}
+{% endfor %}
