@@ -10,11 +10,11 @@ MANAGERS = ADMINS
 DATABASES =  {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': '{{ instance.database.name }}',
-        'USER': '{{ instance.database.user }}',
-        'PASSWORD': '{{ instance.database.password }}',
-        'HOST': '{{ instance.database.host }}',
-        'PORT': '{{ instance.database.port }}',
+        'NAME': '{{ instance.name }}',
+        'USER': '{{ instance.name }}',
+        'PASSWORD': '{{ instance.secret_key }}',
+        'HOST': 'localhost',
+        'PORT': 5432,
     }
 }
 
@@ -22,23 +22,24 @@ TIME_ZONE = '{{ instance.time_zone }}'
 SITE_ID = {{ instance.site_id }}
 SITE_URL = "{{ instance.site_url }}"
 
-MEDIA_ROOT = '/var/local/enhydris/{{ instance.name }}/media'
+MEDIA_ROOT = '/var/local/lib/enhydris/{{ instance.name }}/media/'
 MEDIA_URL = '/media/'
-STATIC_ROOT = '/var/local/enhydris/{{ instance.name }}/static'
+STATIC_ROOT = '/var/local/lib/enhydris/static'
 STATIC_URL = '/static/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '{{ instance.secret_key }}'
 
 # Options for django-registration
-ACCOUNT_ACTIVATION_DAYS = 7
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST = 'smtp.my.domain'
-DEFAULT_FROM_EMAIL = 'user@host.domain'
+ACCOUNT_ACTIVATION_DAYS = {{ instance.account_activation_days }}
+REGISTRATION_OPEN = {{ instance.registration_open }}
+EMAIL_USE_TLS = {{ instance.email_use_tls }}
+EMAIL_PORT = {{ instance.email_port }}
+EMAIL_HOST = '{{ instance.email_host }}'
+DEFAULT_FROM_EMAIL = '{{ instance.default_from_email }}'
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
-EMAIL_HOST_USER = 'automaticsender@my.domain'
-EMAIL_HOST_PASSWORD = 'mypassword'
+EMAIL_HOST_USER = '{{ instance.email_host_user }}'
+EMAIL_HOST_PASSWORD = '{{ instance.email_host_password }}'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -94,4 +95,4 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django_notify.context_processors.notifications',
 )
 
-TEMPLATE_DIRS = ('enhydris/templates',)
+TEMPLATE_DIRS = ('/usr/local/enhydris/enhydris/templates',)

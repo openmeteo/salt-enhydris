@@ -142,3 +142,75 @@ enhydris-user:
     - context:
         instance: {{ instance }}
 {% endfor %}
+
+
+### PostgreSQL ###
+
+postgresql:
+  pkg:
+    - installed
+
+postgresql-9.1-postgis:
+  pkg:
+    - installed
+
+# PostGIS template database
+template_postgis:
+  postgres_database.present:
+    - require:
+        - pkg: postgresql
+
+template_postgis1:
+  cmd.run:
+    - user: postgres
+    - name: >
+        createlang plpgsql -d template_postgis;
+        psql template_postgis -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql;
+        psql template_postgis -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql;
+        psql -c
+        "UPDATE pg_database SET datistemplate='true'
+        WHERE datname='template_postgis'" template_postgis
+    - unless: psql -c "SELECT * FROM spatial_ref_sys LIMIT 1" template_postgis
+    - require:
+        - postgres_database.present: template_postgis
+        - pkg: postgresql-9.1-postgis
+
+# PostgreSQL users
+{% for instance in pillar.get('enhydris_instances', {}) %}
+{{ instance.name }}:
+  postgres_user.present:
+    - password: {{ instance.secret_key }}
+    - encrypted: True
+{% endfor %}
+
+
+### Nginx ###
+
+nginx:
+  pkg:
+    - installed
+nginx:
+  service:
+    - running
+    - watch:
+        - pkg: nginx
+
+{% for instance in pillar.get('enhydris_instances', {}) %}
+/var/local/lib/enhydris/{{ instance.site_url }}/media:
+  file.directory:
+    - makedirs: True
+    - dir_mode: 755
+/etc/nginx/sites-available/{{ instance.site_url }}:
+  file.managed:
+    - template: jinja
+    - source: salt://enhydris/nginx-vhost.conf
+    - context:
+        instance: {{ instance }}
+    - require:
+        - pkg: nginx
+extend:
+  nginx:
+    service:
+      - watch:
+          - file.managed: /etc/nginx/sites_available/{{ instance.site_url }}
+{% endfor %
