@@ -1,6 +1,7 @@
 DEBUG = False
 TEMPLATE_DEBUG = False
 ROOT_URLCONF = 'enhydris.urls'
+ALLOWED_HOSTS = ['{{ instance.site_url }}']
 ADMINS = (
 {% for admin in instance.admins %}
     ('{{ admin.email }}', '{{ admin.name }}'),

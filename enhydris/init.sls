@@ -141,6 +141,15 @@ enhydris-user:
     - source: salt://enhydris/settings.py
     - context:
         instance: {{ instance }}
+enhydris_{{ instance.name }}:
+  supervisord:
+    - running
+    - require:
+      - pkg: supervisor
+    - watch:
+      - file.managed: /etc/supervisor/conf.d/enhydris_{{ instance.name }}.conf
+      - file.managed: /etc/enhydris/{{ instance.name }}/run-gunicorn
+      - file.managed: /etc/enhydris/{{ instance.name }}/settings.py
 {% endfor %}
 
 
