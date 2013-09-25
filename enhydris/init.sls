@@ -22,6 +22,10 @@ python-imaging:
   pkg:
     - installed
 
+python-gdal:
+  pkg:
+    - installed
+
 # Dickinson
 build-essential:
   pkg:
