@@ -26,6 +26,16 @@ python-gdal:
   pkg:
     - installed
 
+# Git is used to install Enhydris.
+git:
+  pkg:
+    - installed
+
+# Mercurial is needed to install some Enhydris prerequisites from bitbucket.
+mercurial:
+  pkg:
+    - installed
+
 # Dickinson
 build-essential:
   pkg:
@@ -45,24 +55,14 @@ dickinson:
     - require:
       - pkg: build-essential
 
-# Download enhydris
-enhydris.tar.gz:
-  file.managed:
-    - name: /usr/local/enhydris.tar.gz
-    - source: https://github.com/openmeteo/enhydris/archive/5f742d4175.tar.gz
-    - source_hash: md5=b95ce3d143afd3dd328129ed31e1e3d7
-
-# Unpack enhydris
+# Enhydris
 enhydris:
   cmd.run:
     - cwd: /usr/local
-    - name: >
-        tar xzf enhydris.tar.gz &&
-        ln -sf enhydris-5f742d4175e0d561290511bd2b53a0602e071e82 enhydris
-    - unless:
-        test -e /usr/local/enhydris-5f742d4175e0d561290511bd2b53a0602e071e82
+    - name: git clone https://github.com/openmeteo/enhydris.git
+    - unless: test -e /usr/local/enhydris
     - require:
-        - file.managed: enhydris.tar.gz
+      - pkg: git
 
 # Virtualenv with requirements for enhydris
 requirements.txt:
@@ -88,6 +88,7 @@ requirements-gunicorn: # Add gunicorn to the requirements
         - pkg: python-virtualenv
         - pkg: python-psycopg2
         - pkg: python-imaging
+        - pkg: mercurial
         - cmd.run: dickinson
 
 supervisor:
