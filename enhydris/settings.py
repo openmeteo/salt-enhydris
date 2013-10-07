@@ -97,3 +97,5 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 TEMPLATE_DIRS = ('/usr/local/enhydris/enhydris/templates',)
+
+AUTH_PROFILE_MODULE = 'hcore.UserProfile'
