@@ -60,6 +60,7 @@ INSTALLED_APPS = (
     'registration',
     'ajax_select',
     'captcha',
+    'django_tables2',
 
     'enhydris.dbsync',
     'enhydris.hcore',
