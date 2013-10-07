@@ -99,3 +99,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 TEMPLATE_DIRS = ('/usr/local/enhydris/enhydris/templates',)
 
 AUTH_PROFILE_MODULE = 'hcore.UserProfile'
+
+ENHYDRIS_USERS_CAN_ADD_CONTENT = {{ instance.get('enhydris_users_can_add_content', False }}
+ENHYDRIS_TSDATA_AVAILABLE_FOR_ANONYMOUS_USERS = {{ instance.get('enhydris_tsdata_available_for_anonymous_users', False }}
+ENHYDRIS_STORE_TSDATA_LOCALLY = {{ instance.get('enhydris_store_tsdata_locally', True) }}
+ENHYDRIS_SITE_CONTENT_IS_FREE = {{ instance.get('enhydris_site_content_is_free', False) }}
+ENHYDRIS_WGS84_NAME = "{{ instance.get('enhydris_wgs84_name', 'WGS84') }}"
