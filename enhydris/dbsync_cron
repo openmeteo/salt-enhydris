@@ -1,0 +1,10 @@
+#!/bin/bash
+
+export DJANGO_SETTINGS_MODULE=settings
+export PYTHONPATH=/etc/enhydris/{{ instance.name }}:/usr/local/enhydris
+export PATH=/usr/local/enhydris.virtualenv/bin:/bin:/usr/bin:/usr/sbin
+
+for remote_db in {{ instance.dbsync_remote_dbs|join(" ") }}; do
+    python -Wignore /usr/local/enhydris/manage.py hcore_remotesyncdb \
+        --remote=$remote_db --app=hcore --exclude=UserProfile --silent
+done

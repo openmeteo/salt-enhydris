@@ -155,6 +155,18 @@ enhydris_{{ instance.name }}:
       - file.managed: /etc/supervisor/conf.d/enhydris_{{ instance.name }}.conf
       - file.managed: /etc/enhydris/{{ instance.name }}/run-gunicorn
       - file.managed: /etc/enhydris/{{ instance.name }}/settings.py
+{% if instance.dbsync_remote_dbs is defined %}
+/etc/cron.daily/enhydris_{{ instance.name }}_dbsync:
+  file.managed:
+    - template: jinja
+    - source: salt://enhydris/dbsync_cron
+    - mode: 755
+    - context:
+        instance: {{ instance }}
+{% else %}
+/etc/cron.daily/enhydris_{{ instance.name }}_dbsync:
+  file.absent
+{% endif %}
 {% endfor %}
 
 
