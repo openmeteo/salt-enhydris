@@ -34,6 +34,7 @@ SECRET_KEY = '{{ instance.secret_key }}'
 # Options for django-registration
 ACCOUNT_ACTIVATION_DAYS = {{ instance.account_activation_days }}
 REGISTRATION_OPEN = {{ instance.registration_open }}
+LOGIN_REDIRECT_URL = '/'
 EMAIL_USE_TLS = {{ instance.email_use_tls }}
 EMAIL_PORT = {{ instance.email_port }}
 EMAIL_HOST = '{{ instance.email_host }}'
