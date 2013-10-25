@@ -231,6 +231,8 @@ nginx:
 /var/local/lib/enhydris/{{ instance.site_url }}/media:
   file.directory:
     - makedirs: True
+    - user: enhydris
+    - group: enhydris
     - dir_mode: 755
 /etc/nginx/sites-available/{{ instance.site_url }}:
   file.managed:
