@@ -141,11 +141,15 @@ enhydris-user:
     - context:
         instance: {{ instance }}
 /etc/enhydris/{{ instance.name }}/settings.py:
+  {% set use_db_of = instance.get('use_db_of', instance.name) %}
   file.managed:
     - template: jinja
     - source: salt://enhydris/settings.py
     - context:
         instance: {{ instance }}
+        db_instance: {% for i in pillar['enhydris_instances'] -%}
+                       {% if i.name == use_db_of %}{{ i }}{% endif -%}
+                     {% endfor %}
 enhydris_{{ instance.name }}:
   supervisord:
     - running
@@ -206,7 +210,8 @@ template_postgis1:
         - pkg: postgresql-9.1-postgis
 
 # PostgreSQL users
-{% for instance in pillar.get('enhydris_instances', {}) %}
+{% for instance in pillar.get('enhydris_instances', {})
+   if not instance.get('use_db_of', '') %}
 {{ instance.name }}-postgresql-user:
   postgres_user.present:
     - name: {{ instance.name }}

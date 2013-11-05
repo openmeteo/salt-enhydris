@@ -18,6 +18,20 @@ enhydris_instances:
     email_host_user: openmeteo
     email_host_password: mypassword
     gunicorn_port: 8001
+
+  - name: another_instance
+    # This is another instance in the same machine, that uses the same
+    # database as openmeteo, but filtered to show only a subset.
+    # ... (the normal settings must be specified anyway and
+    # ...  supplemented with those below.)
+    use_db_of: openmeteo
+    enhydris_site_station_filter: {'owner__id__exact': '9',}
+
+  - name: a_third_instance
+    # This database acts as an aggregator; it uses the Enhydris dbsync
+    # application to get stuff from other databases.
+    # ...
+    # ...
     dbsync_remote_dbs:
       - kyy.hydroscope.gr
       - emy.hydroscope.gr
