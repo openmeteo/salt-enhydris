@@ -3,8 +3,8 @@ TEMPLATE_DEBUG = False
 ROOT_URLCONF = 'enhydris.urls'
 ALLOWED_HOSTS = ['{{ instance.site_url }}']
 ADMINS = (
-{% for admin in instance.admins %}
-    ('{{ admin.name }}', '{{ admin.email }}'),
+{% for admin in admins %}
+    ('{{ admin.email }}', '{{ admin.name }}'),
 {% endfor %}
 )
 MANAGERS = ADMINS

@@ -147,7 +147,8 @@ enhydris-user:
     - source: salt://enhydris/settings.py
     - context:
         instance: {{ instance }}
-        db_instance: {% for i in pillar['enhydris_instances'] -%}
+        admins: {{ instance.admins }}  # Workaround salt issue #7846
+        db_instance: {% for i in pillar.enhydris_instances -%}
                        {% if i.name == use_db_of %}{{ i }}{% endif -%}
                      {% endfor %}
 enhydris_{{ instance.name }}:
@@ -222,6 +223,69 @@ template_postgis1:
 {% endfor %}
 
 
+### Firewall ###
+iptables-persistent:
+  pkg:
+    - installed
+drop_invalid:
+  iptables.append:
+    - table: filter
+    - chain: INPUT
+    - match: state
+    - connstate: INVALID
+    - jump: DROP
+    - watch_in:
+      - cmd.wait: make-persistent
+accept_established:
+  iptables.append:
+    - table: filter
+    - chain: INPUT
+    - match: state
+    - connstate: ESTABLISHED,RELATED
+    - jump: ACCEPT
+    - watch_in:
+      - cmd.wait: make-persistent
+accept_local:
+  iptables.append:
+    - table: filter
+    - chain: INPUT
+    - in-interface: lo
+    - jump: ACCEPT
+    - watch_in:
+      - cmd.wait: make-persistent
+accept_icmp:
+  iptables.append:
+    - table: filter
+    - chain: INPUT
+    - proto: icmp
+    - icmp-type: any
+    - jump: ACCEPT
+    - watch_in:
+      - cmd.wait: make-persistent
+accept_ssh:
+  iptables.append:
+    - table: filter
+    - chain: INPUT
+    - proto: tcp
+    - dport: 22
+    - jump: ACCEPT
+    - watch_in:
+      - cmd.wait: make-persistent
+policy_deny:
+  iptables.set_policy:
+    - table: filter
+    - chain: INPUT
+    - policy: DROP
+    - watch_in:
+      - cmd.wait: make-persistent
+make-persistent:
+  # This should be cmd.wait, not cmd.run. However, in the current salt version,
+  # all watch_in seem to be ignored. Therefore we settle with always running
+  # the thing below.
+  cmd.run:
+    - name: /etc/init.d/iptables-persistent save
+
+
 ### Nginx ###
 
 nginx:
@@ -231,6 +295,41 @@ nginx:
     - running
     - watch:
         - pkg: nginx
+
+accept_http:
+  iptables.append:
+    - table: filter
+    - chain: INPUT
+    - proto: tcp
+    - dport: 80
+    - jump: ACCEPT
+    - watch_in:
+      - cmd.wait: make-persistent
+
+{% if 'nginx' in pillar %}
+/etc/nginx/enhydris-cert.pem:
+  file.managed:
+    - contents: |
+        {{ pillar.nginx.ssl_certificate.replace("\n", "\n        ") }}
+    - require:
+        - pkg: nginx
+/etc/ssl/private/enhydris.key:
+  file.managed:
+    - contents: |
+        {{ pillar.nginx.ssl_private_key.replace("\n", "\n        ") }}
+    - mode: 600
+    - require:
+        - pkg: nginx
+accept_https:
+  iptables.append:
+    - table: filter
+    - chain: INPUT
+    - proto: tcp
+    - dport: 443
+    - jump: ACCEPT
+    - watch_in:
+      - cmd.wait: make-persistent
+{% endif %}
 
 {% for instance in pillar.get('enhydris_instances', {}) %}
 /var/local/lib/enhydris/{{ instance.site_url }}/media:
@@ -245,6 +344,7 @@ nginx:
     - source: salt://enhydris/nginx-vhost.conf
     - context:
         instance: {{ instance }}
+        ssl: {{ 'nginx' in pillar }}
     - require:
         - pkg: nginx
 /etc/nginx/sites-enabled/{{ instance.site_url }}:

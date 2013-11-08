@@ -35,3 +35,27 @@ enhydris_instances:
     dbsync_remote_dbs:
       - kyy.hydroscope.gr
       - emy.hydroscope.gr
+
+nginx:
+  # The next parameters are optional
+  ssl_private_key: |
+    -----BEGIN RSA PRIVATE KEY-----
+    ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKL
+    ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKL
+    ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKL
+    ...
+    -----END RSA PRIVATE KEY-----
+  ssl_certificate: |
+    -----BEGIN CERTIFICATE-----
+    ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKL
+    AB (this is the server certificate ) lmnopqrstuvwxyzABCDEFGHIJKL
+    ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKL
+    ...
+    -----END CERTIFICATE-----
+    -----BEGIN CERTIFICATE-----
+    ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKL
+    AB (this is the intermediate certificate; more may follow) HIJKL
+    ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKL
+    ...
+    -----END CERTIFICATE-----
+
