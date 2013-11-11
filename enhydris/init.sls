@@ -188,6 +188,8 @@ postgresql-9.1-postgis:
 # PostGIS template database
 template_postgis:
   postgres_database.present:
+    - lc_collate: en_US.UTF-8
+    - lc_ctype: en_US.UTF-8
     - require:
         - pkg: postgresql
 
