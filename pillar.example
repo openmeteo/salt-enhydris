@@ -39,10 +39,12 @@ enhydris_instances:
   - name: a_fourth_instance
     # Here are some optional variables:
     base_template: |
+      {% raw -%}
       {% extends "base-sample.html" %}
       {% block footer %}
         Powered by salt-enhydris
       {% endblock %}
+      {%- endraw %}
 
 nginx:
   # The next parameters are optional
