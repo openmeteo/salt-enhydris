@@ -51,3 +51,5 @@ ENHYDRIS_STORE_TSDATA_LOCALLY = {{ instance.get('enhydris_store_tsdata_locally',
 ENHYDRIS_SITE_CONTENT_IS_FREE = {{ instance.get('enhydris_site_content_is_free', False) }}
 ENHYDRIS_WGS84_NAME = "{{ instance.get('enhydris_wgs84_name', 'WGS84') }}"
 ENHYDRIS_SITE_STATION_FILTER = {{ instance.get('enhydris_site_station_filter', {}) }}
+
+TEMPLATE_DIRS = ('/etc/enhydris/{{ instance.name }}/templates',) + TEMPLATE_DIRS

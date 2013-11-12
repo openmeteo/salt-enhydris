@@ -151,6 +151,12 @@ enhydris-user:
         db_instance: {% for i in pillar.enhydris_instances -%}
                        {% if i.name == use_db_of %}{{ i }}{% endif -%}
                      {% endfor %}
+/etc/enhydris/{{ instance.name }}/templates:
+  file.directory:
+/etc/enhydris/{{ instance.name }}/templates/base.html:
+  file.managed:
+    - contents: |
+        {{ instance.get("base_template", "{% extends 'base-sample.html' %}").replace("\n", "\n        ") }}
 enhydris_{{ instance.name }}:
   supervisord:
     - running
