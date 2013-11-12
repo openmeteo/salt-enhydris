@@ -1,6 +1,6 @@
+from enhydris.settings.base import *
 DEBUG = False
 TEMPLATE_DEBUG = False
-ROOT_URLCONF = 'enhydris.urls'
 ALLOWED_HOSTS = ['{{ instance.site_url }}']
 ADMINS = (
 {% for admin in admins %}
@@ -33,7 +33,6 @@ SECRET_KEY = '{{ instance.secret_key }}'
 # Options for django-registration
 ACCOUNT_ACTIVATION_DAYS = {{ instance.account_activation_days }}
 REGISTRATION_OPEN = {{ instance.registration_open }}
-LOGIN_REDIRECT_URL = '/'
 EMAIL_USE_TLS = {{ instance.email_use_tls }}
 EMAIL_PORT = {{ instance.email_port }}
 EMAIL_HOST = '{{ instance.email_host }}'
@@ -45,66 +44,6 @@ EMAIL_HOST_USER = '{{ instance.email_host_user }}'
 {% if 'email_host_user' in instance -%}
 EMAIL_HOST_PASSWORD = '{{ instance.email_host_password }}'
 {% endif %}
-
-INSTALLED_APPS = (
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.staticfiles',
-    'django.contrib.markup',
-    'django.contrib.admin',
-    'django.contrib.sites',
-    'django.contrib.humanize',
-    'django.contrib.gis',
-    'django.contrib.flatpages',
-
-    'rest_framework',
-    'south',
-    'enhydris.sorting',
-    'registration',
-    'ajax_select',
-    'captcha',
-    'django_tables2',
-
-    'enhydris.dbsync',
-    'enhydris.hcore',
-    'enhydris.hprocessor',
-    'enhydris.hchartpages',
-    'enhydris.api',
-    'enhydris.permissions',
-)
-
-MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.middleware.transaction.TransactionMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.middleware.gzip.GZipMiddleware',
-    'django_notify.middleware.NotificationsMiddleware',
-    'enhydris.sorting.middleware.SortingMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-)
-
-APPEND_SLASH = True
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.core.context_processors.request',
-    'django.contrib.auth.context_processors.auth',
-    'django.contrib.messages.context_processors.messages',
-    'django_notify.context_processors.notifications',
-    'enhydris.hcore.context_processors.registration',
-)
-
-TEMPLATE_DIRS = ('/usr/local/enhydris/enhydris/templates',)
-
-AUTH_PROFILE_MODULE = 'hcore.UserProfile'
 
 ENHYDRIS_USERS_CAN_ADD_CONTENT = {{ instance.get('enhydris_users_can_add_content', False) }}
 ENHYDRIS_TSDATA_AVAILABLE_FOR_ANONYMOUS_USERS = {{ instance.get('enhydris_tsdata_available_for_anonymous_users', False) }}
