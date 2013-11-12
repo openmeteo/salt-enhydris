@@ -56,6 +56,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.humanize',
     'django.contrib.gis',
+    'django.contrib.flatpages',
 
     'rest_framework',
     'south',
@@ -84,6 +85,7 @@ MIDDLEWARE_CLASSES = (
     'django_notify.middleware.NotificationsMiddleware',
     'enhydris.sorting.middleware.SortingMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
 
 APPEND_SLASH = True
