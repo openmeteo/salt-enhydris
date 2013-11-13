@@ -45,6 +45,9 @@ enhydris_instances:
         Powered by salt-enhydris
       {% endblock %}
       {%- endraw %}
+    site_aliases:  # Will redirect to site_url
+      - www.openmeteo.org 
+      - another_alias.openmeteo.org
 
 nginx:
   # The next parameters are optional
