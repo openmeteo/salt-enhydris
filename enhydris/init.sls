@@ -26,6 +26,10 @@ python-gdal:
   pkg:
     - installed
 
+python-docutils:
+  pkg:
+    - installed
+
 # Git is used to install Enhydris.
 git:
   pkg:
