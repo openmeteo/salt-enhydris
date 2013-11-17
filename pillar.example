@@ -48,6 +48,7 @@ enhydris_instances:
     site_aliases:  # Will redirect to site_url
       - www.openmeteo.org 
       - another_alias.openmeteo.org
+    use_enhydris_stats: True  # Use enhydris_stats app
 
 nginx:
   # The next parameters are optional

@@ -68,6 +68,15 @@ enhydris:
     - require:
       - pkg: git
 
+# Enhydris_stats
+enhydris_stats:
+  cmd.run:
+    - cwd: /usr/local
+    - name: git clone https://github.com/openmeteo/enhydris_stats.git
+    - unless: test -e /usr/local/enhydris_stats
+    - require:
+      - pkg: git
+
 # Virtualenv with requirements for enhydris
 requirements.txt:
   cmd.run:
@@ -155,6 +164,12 @@ enhydris-user:
         db_instance: {% for i in pillar.enhydris_instances -%}
                        {% if i.name == use_db_of %}{{ i }}{% endif -%}
                      {% endfor %}
+/etc/enhydris/{{ instance.name }}/urls.py:
+  file.managed:
+    - template: jinja
+    - source: salt://enhydris/urls.py
+    - context:
+        instance: {{ instance }}
 /etc/enhydris/{{ instance.name }}/templates/base.html:
   file.managed:
     - makedirs: True

@@ -53,3 +53,9 @@ ENHYDRIS_WGS84_NAME = "{{ instance.get('enhydris_wgs84_name', 'WGS84') }}"
 ENHYDRIS_SITE_STATION_FILTER = {{ instance.get('enhydris_site_station_filter', {}) }}
 
 TEMPLATE_DIRS = ('/etc/enhydris/{{ instance.name }}/templates',) + TEMPLATE_DIRS
+
+ROOT_URLCONF = 'urls'
+
+{% if instance.get('use_enhydris_stats', False) %}
+INSTALLED_APPS = INSTALLED_APPS + ('enhydris_stats',)
+{% endif %}
