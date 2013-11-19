@@ -322,6 +322,26 @@ nginx:
     - watch:
         - pkg: nginx
 
+/etc/nginx/sites_available/default:
+  file.managed:
+    - contents: |
+        server {
+            listen 80 default_server;
+            return 404;
+        }
+        {%- if 'nginx' in pillar %}
+        server {
+            listen 443 default_server;
+            ssl on;
+            ssl_certificate /etc/nginx/enhydris-cert.pem;
+            ssl_certificate_key /etc/ssl/private/enhydris.key;
+            gzip off;  # Avoid CRIME exploit
+            return 404;
+        }
+        {% endif %}
+    - watch_in:
+      - service: nginx
+
 accept_http:
   iptables.append:
     - table: filter
