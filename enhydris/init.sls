@@ -322,7 +322,7 @@ nginx:
     - watch:
         - pkg: nginx
 
-/etc/nginx/sites_available/default:
+/etc/nginx/sites-available/default:
   file.managed:
     - contents: |
         server {
