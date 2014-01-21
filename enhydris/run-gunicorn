@@ -7,6 +7,9 @@ USER=enhydris
 GROUP=enhydris
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export PYTHONPATH=$SCRIPT_DIR:/usr/local/enhydris
+    {%- if instance.get('use_enhydris_stats', False) -%}
+    :/usr/local/enhydris_stats
+    {%- endif %}
 export DJANGO_SETTINGS_MODULE=settings
 source /usr/local/enhydris.virtualenv/bin/activate
 cd /usr/local/enhydris

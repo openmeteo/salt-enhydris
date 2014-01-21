@@ -26,6 +26,10 @@ python-gdal:
   pkg:
     - installed
 
+python-docutils:
+  pkg:
+    - installed
+
 # Git is used to install Enhydris.
 git:
   pkg:
@@ -61,6 +65,15 @@ enhydris:
     - cwd: /usr/local
     - name: git clone https://github.com/openmeteo/enhydris.git
     - unless: test -e /usr/local/enhydris
+    - require:
+      - pkg: git
+
+# Enhydris_stats
+enhydris_stats:
+  cmd.run:
+    - cwd: /usr/local
+    - name: git clone https://github.com/openmeteo/enhydris_stats.git
+    - unless: test -e /usr/local/enhydris_stats
     - require:
       - pkg: git
 
@@ -151,6 +164,17 @@ enhydris-user:
         db_instance: {% for i in pillar.enhydris_instances -%}
                        {% if i.name == use_db_of %}{{ i }}{% endif -%}
                      {% endfor %}
+/etc/enhydris/{{ instance.name }}/urls.py:
+  file.managed:
+    - template: jinja
+    - source: salt://enhydris/urls.py
+    - context:
+        instance: {{ instance }}
+/etc/enhydris/{{ instance.name }}/templates/base.html:
+  file.managed:
+    - makedirs: True
+    - contents: |
+        {{ instance.get("base_template", "{% extends 'base-sample.html' %}").replace("\n", "\n        ") }}
 enhydris_{{ instance.name }}:
   supervisord:
     - running
@@ -188,6 +212,8 @@ postgresql-9.1-postgis:
 # PostGIS template database
 template_postgis:
   postgres_database.present:
+    - lc_collate: en_US.UTF-8
+    - lc_ctype: en_US.UTF-8
     - require:
         - pkg: postgresql
 
@@ -295,6 +321,26 @@ nginx:
     - running
     - watch:
         - pkg: nginx
+
+/etc/nginx/sites-available/default:
+  file.managed:
+    - contents: |
+        server {
+            listen 80 default_server;
+            return 404;
+        }
+        {%- if 'nginx' in pillar %}
+        server {
+            listen 443 default_server;
+            ssl on;
+            ssl_certificate /etc/nginx/enhydris-cert.pem;
+            ssl_certificate_key /etc/ssl/private/enhydris.key;
+            gzip off;  # Avoid CRIME exploit
+            return 404;
+        }
+        {% endif %}
+    - watch_in:
+      - service: nginx
 
 accept_http:
   iptables.append:
